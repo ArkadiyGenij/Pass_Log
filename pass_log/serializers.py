@@ -4,10 +4,40 @@ from rest_framework import serializers
 from pass_log.models import Group, Student, Attendance
 
 
+class AttendanceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['date'] = instance.date.strftime('%d.%m.%Y')
+        return representation
+
+
 class StudentSerializer(serializers.ModelSerializer):
+    attendance_count = serializers.SerializerMethodField()
+    attendances = serializers.SerializerMethodField()
+
     class Meta:
         model = Student
-        fields = ['name', 'surname', ]
+        fields = ['name', 'surname', 'attendance_count', 'attendances']
+
+    @staticmethod
+    def get_attendance_count(obj):
+        return obj.attendance.count()
+
+    @staticmethod
+    def get_attendances(self, obj):
+        start_date = self.context.get('start_date')
+        end_date = self.context.get('end_date')
+        attendances = obj.attendance.all()
+
+        if start_date and end_date:
+            attendances = attendances.filter(date__range=[start_date, end_date])
+
+        attendances = attendances.order_by('-date')
+        return AttendanceDisplaySerializer(attendances, many=True).data
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -37,17 +67,6 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['date'] = timezone.now().date()
         return super().create(validated_data)
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['date'] = instance.date.strftime('%d.%m.%Y')
-        return representation
-
-
-class AttendanceDisplaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attendance
-        fields = '__all__'
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
