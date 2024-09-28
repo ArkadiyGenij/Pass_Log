@@ -3,13 +3,13 @@ from rest_framework.routers import DefaultRouter
 
 from pass_log.apps import PassLogConfig
 from pass_log.views import GroupViewSet, GroupListAPIView, AttendanceCreateAPIView, \
-    AttendanceDisplayAPIView, AttendanceByStudentView, AttendanceByGroupAndDateView
+    AttendanceDisplayAPIView, AttendanceByStudentView, AttendanceByGroupAndDateView, StudentViewSet
 
 app_name = PassLogConfig.name
 
 router = DefaultRouter()
 router.register(r'group', GroupViewSet, basename="group")
-router.register(r'student', GroupViewSet, basename="student")
+router.register(r'student', StudentViewSet, basename="student")
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from rest_framework import serializers
 
 from pass_log.models import Group, Student, Attendance
@@ -8,7 +7,7 @@ from pass_log.models import Group, Student, Attendance
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['name', 'surname']
+        fields = ['name', 'surname', ]
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -19,7 +18,8 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ['name', 'students', 'students_count']
 
-    def get_students_count(self, obj):
+    @staticmethod
+    def get_students_count(obj):
         return obj.students.count()
 
 
