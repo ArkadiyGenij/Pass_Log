@@ -28,15 +28,8 @@ class StudentSerializer(serializers.ModelSerializer):
         return obj.attendance.count()
 
     @staticmethod
-    def get_attendances(self, obj):
-        start_date = self.context.get('start_date')
-        end_date = self.context.get('end_date')
-        attendances = obj.attendance.all()
-
-        if start_date and end_date:
-            attendances = attendances.filter(date__range=[start_date, end_date])
-
-        attendances = attendances.order_by('-date')
+    def get_attendances(obj):
+        attendances = obj.attendance.all().order_by('-date')
         return AttendanceDisplaySerializer(attendances, many=True).data
 
 
