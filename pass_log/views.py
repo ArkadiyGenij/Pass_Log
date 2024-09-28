@@ -1,5 +1,3 @@
-from lib2to3.pgen2.tokenize import group
-
 from django.utils import timezone
 from rest_framework import viewsets, generics
 
