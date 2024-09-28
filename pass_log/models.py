@@ -19,7 +19,7 @@ class Student(models.Model):
     name = models.CharField(max_length=30, verbose_name="имя студента")
     surname = models.CharField(max_length=30, verbose_name="фамилия студента")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True, related_name="students",
-                                verbose_name="группа")
+                              verbose_name="группа")
 
     class Meta:
         verbose_name = "студент"
@@ -30,6 +30,7 @@ class Student(models.Model):
 
 
 class Attendance(models.Model):
+
     STATUS_CHOICES = [
         ('present', 'Присутствовал'),
         ('absent_excused', 'Отсутствовал с уважительной причиной'),
@@ -41,7 +42,7 @@ class Attendance(models.Model):
                                 verbose_name="студент")
     date = models.DateField(verbose_name="дата")
     pair_number = models.PositiveIntegerField(verbose_name="номер пары")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, verbose_name="причина пропуска")
 
     class Meta:
         unique_together = ('student', 'date', 'pair_number')

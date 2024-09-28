@@ -1,6 +1,8 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 
-from pass_log.models import Group, Student
+from pass_log.models import Group, Student, Attendance
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -25,3 +27,29 @@ class GroupListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['name', ]
+
+
+class AttendanceCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['student', 'pair_number', 'status', ]
+
+    def create(self, validated_data):
+        validated_data['date'] = timezone.now().date()
+        return super().create(validated_data)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['date'] = instance.date.strftime('%d.%m.%Y')
+        return representation
+
+
+class AttendanceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['date'] = instance.date.strftime('%d.%m.%Y')
+        return representation
