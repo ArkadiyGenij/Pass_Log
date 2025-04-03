@@ -3,6 +3,7 @@ from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
 from pass_log.models import Group, Student, Attendance
+from pass_log.permissions import IsCuratorOrCaptainOfStudentGroup
 from pass_log.serializers import GroupSerializer, GroupListSerializer, StudentSerializer, AttendanceCreateSerializer, \
     AttendanceDisplaySerializer
 
@@ -41,7 +42,7 @@ class AttendanceCreateAPIView(generics.CreateAPIView):
     """
     queryset = Attendance.objects.all()
     serializer_class = AttendanceCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsCuratorOrCaptainOfStudentGroup]
 
 
 class AttendanceDisplayAPIView(generics.ListAPIView):
@@ -59,7 +60,6 @@ class AttendanceByStudentView(generics.ListAPIView):
     <int:student_id> - идентификатор конкретного студента
     """
     serializer_class = AttendanceDisplaySerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         student_id = self.kwargs['student_id']

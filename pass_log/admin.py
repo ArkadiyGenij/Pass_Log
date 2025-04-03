@@ -11,7 +11,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'surname', 'group')  # Поля, отображаемые в списке
+    list_display = ('id', 'name', 'surname', 'group')  # Поля, отображаемые в списке
     search_fields = ('name', 'surname')  # Поля, по которым можно искать
     ordering = ('name', 'surname', 'group')  # Поля для сортировки
 

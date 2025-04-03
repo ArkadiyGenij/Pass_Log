@@ -4,6 +4,10 @@ from django.db import models
 # Create your models here.
 class Group(models.Model):
     name = models.CharField(max_length=100, verbose_name="название группы")
+    curator = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, default=None,
+                                verbose_name='куратор', related_name="curator_groups")
+    captain = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, default=None,
+                                verbose_name='староста', related_name="captain_groups")
 
     # curator =
 
@@ -30,7 +34,6 @@ class Student(models.Model):
 
 
 class Attendance(models.Model):
-
     STATUS_CHOICES = [
         ('present', 'Присутствовал'),
         ('absent_excused', 'Отсутствовал с уважительной причиной'),
