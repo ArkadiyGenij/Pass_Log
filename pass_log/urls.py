@@ -18,7 +18,7 @@ urlpatterns = [
     path('attendance/', AttendanceCreateAPIView.as_view(), name='attendance-create'),
     path('attendance/list', AttendanceDisplayAPIView.as_view(), name='attendance-list'),
     path('attendance/student/<int:student_id>/', AttendanceByStudentView.as_view(), name='attendance-by-student'),
-    path('attendance/group/', AttendanceByGroupAndDateRangeView.as_view(), name='attendance-by-group-and-date-range'),
+    path('attendance/group/range/', AttendanceByGroupAndDateRangeView.as_view(), name='attendance-by-group-and-date-range'),
     path('attendance/group/', AttendanceByGroupAndDateView.as_view(), name='attendance-by-group-and-date'),
     path('attendance/<int:pk>/', AttendanceUpdateView.as_view(), name='attendance-update'),
 

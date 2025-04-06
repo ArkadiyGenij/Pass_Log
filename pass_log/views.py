@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from pass_log.models import Group, Student, Attendance
 from pass_log.permissions import IsCuratorOrCaptainOfStudentGroup
@@ -24,7 +24,6 @@ class GroupListAPIView(generics.ListAPIView):
     """
     queryset = Group.objects.all()
     serializer_class = GroupListSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -114,7 +113,16 @@ class AttendanceByGroupAndDateView(generics.ListAPIView):
         group_id = self.request.query_params.get('group')
         date = self.request.query_params.get('date')
 
-        if date:
-            date = timezone.datetime.strptime(date, '%d.%m.%Y').date()
+        # Проверка, что оба параметра переданы
+        if not group_id or not date:
+            return Attendance.objects.none()  # Возвращаем пустой queryset, если данные не переданы
 
-        queryset = Attendance.objects.filter(student__group__id=group_id)
+        # Преобразование строки в дату
+        try:
+            date = timezone.datetime.strptime(date, '%d.%m.%Y').date()
+        except ValueError:
+            return Attendance.objects.none()  # Если не удается преобразовать дату, возвращаем пустой queryset
+
+        # Фильтрация по группе и дате
+        queryset = Attendance.objects.filter(student__group__id=group_id, date=date)
+        return queryset

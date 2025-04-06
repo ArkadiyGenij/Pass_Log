@@ -4,7 +4,7 @@ from .models import Group, Student, Attendance
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ('name',)  # Поля, отображаемые в списке
+    list_display = ('id', 'name', 'curator', 'captain')  # Поля, отображаемые в списке
     search_fields = ('name',)  # Поля, по которым можно искать
     ordering = ('name',)  # Поля для сортировки
 
