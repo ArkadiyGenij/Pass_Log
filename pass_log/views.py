@@ -36,6 +36,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated]
 
+
 class AttendanceCreateAPIView(generics.CreateAPIView):
     """
     Добавление пропуска http://127.0.0.1:8000/attendance/
@@ -66,7 +67,7 @@ class AttendanceByStudentView(generics.ListAPIView):
         return Attendance.objects.filter(student__id=student_id)
 
 
-class AttendanceByGroupAndDateView(generics.ListAPIView):
+class AttendanceByGroupAndDateRangeView(generics.ListAPIView):
     """
     Список пропусков конкретной группы в конкретный период времени http://127.0.0.1:8000/attendance/group/
     """
@@ -92,3 +93,28 @@ class AttendanceByGroupAndDateView(generics.ListAPIView):
         elif end_date:
             queryset = queryset.filter(date__lte=end_date)
         return queryset
+
+
+class AttendanceUpdateView(generics.UpdateAPIView):
+    """
+    Обновление записи о пропуске http://127.0.0.1:8000/attendance/{id}/
+    """
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceCreateSerializer
+    permission_classes = [IsAuthenticated, IsCuratorOrCaptainOfStudentGroup]
+
+
+class AttendanceByGroupAndDateView(generics.ListAPIView):
+    """
+    Список пропусков конкретной группы в конкретный период времени http://127.0.0.1:8000/attendance/group/
+    """
+    serializer_class = AttendanceDisplaySerializer
+
+    def get_queryset(self):
+        group_id = self.request.query_params.get('group')
+        date = self.request.query_params.get('date')
+
+        if date:
+            date = timezone.datetime.strptime(date, '%d.%m.%Y').date()
+
+        queryset = Attendance.objects.filter(student__group__id=group_id)

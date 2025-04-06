@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 
 from pass_log.apps import PassLogConfig
 from pass_log.views import GroupViewSet, GroupListAPIView, AttendanceCreateAPIView, \
-    AttendanceDisplayAPIView, AttendanceByStudentView, AttendanceByGroupAndDateView, StudentViewSet
+    AttendanceDisplayAPIView, AttendanceByStudentView, AttendanceByGroupAndDateRangeView, StudentViewSet, \
+    AttendanceUpdateView, AttendanceByGroupAndDateView
 
 app_name = PassLogConfig.name
 
@@ -17,6 +18,8 @@ urlpatterns = [
     path('attendance/', AttendanceCreateAPIView.as_view(), name='attendance-create'),
     path('attendance/list', AttendanceDisplayAPIView.as_view(), name='attendance-list'),
     path('attendance/student/<int:student_id>/', AttendanceByStudentView.as_view(), name='attendance-by-student'),
+    path('attendance/group/', AttendanceByGroupAndDateRangeView.as_view(), name='attendance-by-group-and-date-range'),
     path('attendance/group/', AttendanceByGroupAndDateView.as_view(), name='attendance-by-group-and-date'),
+    path('attendance/<int:pk>/', AttendanceUpdateView.as_view(), name='attendance-update'),
 
 ]

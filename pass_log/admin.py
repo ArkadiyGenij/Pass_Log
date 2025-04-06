@@ -6,7 +6,7 @@ from .models import Group, Student, Attendance
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name',)  # Поля, отображаемые в списке
     search_fields = ('name',)  # Поля, по которым можно искать
-    ordering = ('name',)
+    ordering = ('name',)  # Поля для сортировки
 
 
 @admin.register(Student)
@@ -18,6 +18,6 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('student', 'date', 'pair_number', 'status')  # Поля, отображаемые в списке
+    list_display = ('id', 'student', 'date', 'pair_number', 'status')  # Поля, отображаемые в списке
     list_filter = ('date', 'status')  # Фильтры по полям
     search_fields = ('student__name', 'student__surname')  # Поиск по имени и фамилии студента
