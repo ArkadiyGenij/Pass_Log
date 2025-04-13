@@ -6,7 +6,7 @@ from pass_log.models import Group, Student, Attendance
 class StudentInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['name', 'surname']
+        fields = ['id', 'name', 'surname']
 
 class AttendanceDisplaySerializer(serializers.ModelSerializer):
 
