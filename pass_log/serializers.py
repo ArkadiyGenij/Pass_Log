@@ -3,11 +3,18 @@ from rest_framework import serializers
 
 from pass_log.models import Group, Student, Attendance
 
+class StudentInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['name', 'surname']
 
 class AttendanceDisplaySerializer(serializers.ModelSerializer):
+
+    student = StudentInfoSerializer(read_only=True)
+
     class Meta:
         model = Attendance
-        fields = '__all__'
+        fields = ['id', 'date', 'pair_number', 'status', 'student']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
