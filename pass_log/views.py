@@ -1,11 +1,12 @@
+from django.db.models.query import Prefetch
 from django.utils import timezone
 from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 from pass_log.models import Group, Student, Attendance
 from pass_log.permissions import IsCuratorOrCaptainOfStudentGroup
 from pass_log.serializers import GroupSerializer, GroupListSerializer, StudentSerializer, AttendanceCreateSerializer, \
-    AttendanceDisplaySerializer
+    AttendanceDisplaySerializer, StudentAttendanceGroupSerializer
 
 
 # Create your views here.
@@ -105,24 +106,28 @@ class AttendanceUpdateView(generics.UpdateAPIView):
 
 class AttendanceByGroupAndDateView(generics.ListAPIView):
     """
-    Список пропусков конкретной группы в конкретный период времени http://127.0.0.1:8000/attendance/group/
+    Список пропусков конкретной группы в конкретный период времени
     """
-    serializer_class = AttendanceDisplaySerializer
+    queryset = Student.objects.all()
+    serializer_class = StudentAttendanceGroupSerializer
 
     def get_queryset(self):
         group_id = self.request.query_params.get('group')
         date = self.request.query_params.get('date')
 
-        # Проверка, что оба параметра переданы
         if not group_id or not date:
-            return Attendance.objects.none()  # Возвращаем пустой queryset, если данные не переданы
+            return Student.objects.none()
 
-        # Преобразование строки в дату
         try:
             date = timezone.datetime.strptime(date, '%d.%m.%Y').date()
         except ValueError:
-            return Attendance.objects.none()  # Если не удается преобразовать дату, возвращаем пустой queryset
+            return Student.objects.none()
 
-        # Фильтрация по группе и дате
-        queryset = Attendance.objects.filter(student__group__id=group_id, date=date)
+        queryset = Student.objects.filter(group__id=group_id)
+
+        attendance_queryset = Attendance.objects.filter(date=date)
+
+        queryset = queryset.prefetch_related(
+            Prefetch('attendance', queryset=attendance_queryset)
+        )
         return queryset

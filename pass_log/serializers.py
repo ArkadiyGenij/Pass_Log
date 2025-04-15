@@ -3,18 +3,30 @@ from rest_framework import serializers
 
 from pass_log.models import Group, Student, Attendance
 
+
 class StudentInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'name', 'surname']
 
-class AttendanceDisplaySerializer(serializers.ModelSerializer):
 
+class AttendanceDisplaySerializer(serializers.ModelSerializer):
     student = StudentInfoSerializer(read_only=True)
 
     class Meta:
         model = Attendance
         fields = ['id', 'date', 'pair_number', 'status', 'student']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['date'] = instance.date.strftime('%d.%m.%Y')
+        return representation
+
+
+class AttendanceDisplayGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['id', 'date', 'pair_number', 'status']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -40,6 +52,24 @@ class StudentSerializer(serializers.ModelSerializer):
         return AttendanceDisplaySerializer(attendances, many=True).data
 
 
+class StudentAttendanceGroupSerializer(serializers.ModelSerializer):
+    attendance_count = serializers.SerializerMethodField()
+    attendances = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Student
+        fields = ['name', 'surname', 'attendance_count', 'attendances', ]
+
+    @staticmethod
+    def get_attendance_count(obj):
+        return obj.attendance.count()
+
+    @staticmethod
+    def get_attendances(obj):
+        attendances = obj.attendance.all().order_by('-date')
+        return AttendanceDisplayGroupSerializer(attendances, many=True).data
+
+
 class GroupSerializer(serializers.ModelSerializer):
     students_count = serializers.SerializerMethodField()
     students = StudentSerializer(many=True, read_only=True)
@@ -56,7 +86,7 @@ class GroupSerializer(serializers.ModelSerializer):
 class GroupListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ['name', ]
+        fields = ['id', 'name', ]
 
 
 class AttendanceCreateSerializer(serializers.ModelSerializer):

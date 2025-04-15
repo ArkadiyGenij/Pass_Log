@@ -1,15 +1,18 @@
 from django.db import models
 
 
-# Create your models here.
-class Group(models.Model):
+class Model(models.Model):
+    objects = models.Manager()
+    class Meta:
+        abstract = True
+
+
+class Group(Model):
     name = models.CharField(max_length=100, verbose_name="название группы")
     curator = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, default=None,
                                 verbose_name='куратор', related_name="curator_groups")
     captain = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, default=None,
                                 verbose_name='староста', related_name="captain_groups")
-
-    # curator =
 
     class Meta:
         verbose_name = "группа"
@@ -19,7 +22,7 @@ class Group(models.Model):
         return self.name
 
 
-class Student(models.Model):
+class Student(Model):
     name = models.CharField(max_length=30, verbose_name="имя студента")
     surname = models.CharField(max_length=30, verbose_name="фамилия студента")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True, related_name="students",
@@ -33,7 +36,7 @@ class Student(models.Model):
         return self.name + " " + self.surname
 
 
-class Attendance(models.Model):
+class Attendance(Model):
     STATUS_CHOICES = [
         ('present', 'Присутствовал'),
         ('absent_excused', 'Отсутствовал с уважительной причиной'),
