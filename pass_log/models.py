@@ -38,10 +38,7 @@ class Student(Model):
 
 class Attendance(Model):
     STATUS_CHOICES = [
-        ('present', 'Присутствовал'),
-        ('absent_excused', 'Отсутствовал с уважительной причиной'),
-        ('absent_unexcused', 'Отсутствовал без уважительной причины'),
-        ('unknown', 'Неизвестно'),
+        ('absent', 'Отсутствовал'),
     ]
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True, related_name="attendance",
