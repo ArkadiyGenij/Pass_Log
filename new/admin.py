@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from new.models import NewsImage, News
 
@@ -8,17 +8,21 @@ from new.models import NewsImage, News
 class NewsImageInline(admin.TabularInline):
     model = NewsImage
     extra = 3
-    readonly_fields = ['image_preview']
-
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.image.url)
-        return "Нет изображения"
-
-    image_preview.short_description = "Превью"
 
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'create_at')
-    inlines = [NewsImageInline]
+    list_display = ('title', 'create_at', 'get_preview', 'is_active')
+    list_editable = ('is_active',)
+    list_filter = ('is_active', 'create_at')
+    search_fields = ('title', 'content')
+    readonly_fields = ('get_preview', 'create_at', 'update_at')
+
+    def get_preview(self, obj):
+        if obj.preview:
+            return mark_safe(
+                f'<img src="{obj.preview.url}" width="200" style="max-height: 120px; object-fit: contain;"/>')
+        return "—"
+
+    get_preview.short_description = 'Текущая заставка'
+    get_preview.allow_tags = True
