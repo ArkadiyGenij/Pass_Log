@@ -17,6 +17,7 @@ class NewsAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'create_at')
     search_fields = ('title', 'content')
     readonly_fields = ('get_preview', 'create_at', 'update_at')
+    inlines = [NewsImageInline]
 
     def get_preview(self, obj):
         if obj.preview:

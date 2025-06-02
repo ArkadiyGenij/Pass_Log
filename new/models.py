@@ -23,7 +23,7 @@ class NewsImage(models.Model):
     image = models.ImageField(upload_to='news/%d.%m.%Y', verbose_name='картинка')
     create_at = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     update_at = models.DateTimeField(auto_now=True, verbose_name='дата обновления')
-    news = models.ForeignKey(News, on_delete=models.CASCADE, verbose_name='новость')
+    news = models.ForeignKey(News, on_delete=models.CASCADE, verbose_name='новость', related_name='images')
 
     def __str__(self):
         return self.title
