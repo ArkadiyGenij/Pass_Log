@@ -1,5 +1,6 @@
 from django.db.models.query import Prefetch
 from django.utils import timezone
+from django.views.generic import ListView
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 

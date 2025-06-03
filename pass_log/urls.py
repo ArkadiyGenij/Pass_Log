@@ -21,5 +21,4 @@ urlpatterns = [
     path('attendance/group/range/', AttendanceByGroupAndDateRangeView.as_view(), name='attendance-by-group-and-date-range'),
     path('attendance/group/', AttendanceByGroupAndDateView.as_view(), name='attendance-by-group-and-date'),
     path('attendance/<int:pk>/', AttendanceUpdateView.as_view(), name='attendance-update'),
-
 ]
