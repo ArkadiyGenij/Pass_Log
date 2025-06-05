@@ -40,7 +40,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['name', 'surname', 'attendance_count', 'attendances']
+        fields = ['id', 'name', 'surname', 'attendance_count', 'attendances']
 
     @staticmethod
     def get_attendance_count(obj):
