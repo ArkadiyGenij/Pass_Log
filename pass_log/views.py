@@ -1,6 +1,5 @@
 from django.db.models.query import Prefetch
 from django.utils import timezone
-from django.views.generic import ListView
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -45,6 +44,11 @@ class AttendanceCreateAPIView(generics.CreateAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceCreateSerializer
     permission_classes = [IsAuthenticated, IsCuratorOrCaptainOfStudentGroup]
+
+
+class AttendanceDeleteAPIView(generics.DestroyAPIView):
+    queryset = Attendance.objects.all()
+
 
 
 class AttendanceDisplayAPIView(generics.ListAPIView):

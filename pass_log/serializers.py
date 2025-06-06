@@ -1,4 +1,3 @@
-from django.utils import timezone
 from rest_framework import serializers
 
 from pass_log.models import Group, Student, Attendance
@@ -93,10 +92,6 @@ class AttendanceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = ['student', 'pair_number', 'status', ]
-
-    def create(self, validated_data):
-        validated_data['date'] = timezone.now().date()
-        return super().create(validated_data)
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -27,14 +27,14 @@
 1. Перейди в директорию проекта:
 
 ```bash
-    cd /путь/к/проекту/Pass_Log
- ```
+   cd /путь/к/проекту/Pass_Log
+```
 
 2. Создай виртуальное окружение:
 
-    ```bash
-    python -m venv .venv
-    ```
+```bash
+   python -m venv .venv
+```
 
 3. Активируй виртуальное окружение:
 
@@ -61,13 +61,13 @@
 Если файл `requirements.txt` есть, выполните команду:
 
 ```bash
-pip install -r requirements.txt
+   pip install -r requirements.txt
 ```
 
 Если ты не имеешь файла зависимостей, то можешь установить их по очереди:
 
 ```bash
-pip install django djangorestframework drf-yasg psycopg2-binary
+   pip install django djangorestframework drf-yasg psycopg2-binary
 ```
 
 Здесь устанавливаются:
