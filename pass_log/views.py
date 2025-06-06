@@ -48,6 +48,7 @@ class AttendanceCreateAPIView(generics.CreateAPIView):
 
 class AttendanceDeleteAPIView(generics.DestroyAPIView):
     queryset = Attendance.objects.all()
+    permission_classes = [IsAuthenticated, IsCuratorOrCaptainOfStudentGroup]
 
 
 
