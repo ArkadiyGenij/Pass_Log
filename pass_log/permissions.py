@@ -1,26 +1,30 @@
-from rest_framework import permissions
-
-from pass_log.models import Student
+from rest_framework.permissions import BasePermission
 
 
-class IsCuratorOrCaptainOfStudentGroup(permissions.BasePermission):
+class IsCuratorOrCaptainOfStudentGroup(BasePermission):
     """
-    Разрешение для куратора или старосты добавлять пропуски только для студентов своей группы.
+    Доступ к куратору или старосте группы студента
     """
 
     def has_permission(self, request, view):
-        # Получаем пользователя из запроса
-        user = request.user
-
-        # Получаем студента, для которого создается пропуск
-        student_id = request.data.get("student")  # Предполагаем, что в запросе есть идентификатор студента
-        student = Student.objects.get(id=student_id)
-
-        # Получаем группу этого студента
-        group = student.group
-
-        # Проверяем, является ли пользователь старостой или куратором этой группы
-        if user == group.curator or user == group.captain:
+        if request.method in ('DELETE', 'PUT', 'PATCH'):
             return True
 
-        return False
+        if request.method == 'POST':
+            student_id = request.data.get('student')
+            if not student_id:
+                return False
+
+            from pass_log.models import Student
+            try:
+                student = Student.objects.get(id=student_id)
+                group = student.group
+                return request.user == group.curator or request.user == group.captain
+            except Student.DoesNotExist:
+                return False
+
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        group = obj.student.group
+        return request.user == group.curator or request.user == group.captain

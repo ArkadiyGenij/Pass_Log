@@ -91,7 +91,7 @@ class GroupListSerializer(serializers.ModelSerializer):
 class AttendanceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
-        fields = ['student', 'pair_number', 'status', ]
+        fields = ['student', 'pair_number', 'status', 'date']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
